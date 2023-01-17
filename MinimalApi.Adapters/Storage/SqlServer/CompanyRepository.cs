@@ -30,7 +30,7 @@ VALUES (@Id, @Name, @DocumentValue, @Logo, @PrimaryColor, @PrimaryFontColor, @Se
     public async Task<Company?> GetByIdAsync(Guid id)
     {
         const string query = """
-SELECT CompanyID, Name, Document, Logo, PrimaryColor, PrimaryFontColor, SecondaryColor, SecondaryFontColor, Active, CreatedAt, UpdatedAt, TotalCollaborators, InternalId, DataVersion  
+SELECT CompanyID, Name, Document, Logo, PrimaryColor, PrimaryFontColor, SecondaryColor, SecondaryFontColor, Active, CreatedAt, UpdatedAt, TotalCollaborators, InternalId, xmin as DataVersion  
 FROM Company WHERE CompanyID = @id
 """;
 
@@ -41,28 +41,28 @@ FROM Company WHERE CompanyID = @id
 
         return new Company()
         {
-            Active = result.Active,
-            Id = result.CompanyID,
-            Name = result.Name,
-            Document = new Document(DocumentType.CNPJ, result.Document),
-            Logo = result.Logo,
-            PrimaryColor = result.PrimaryColor,
-            PrimaryFontColor = result.PrimaryFontColor,
-            SecondaryColor = result.SecondaryColor,
-            SecondaryFontColor = result.SecondaryFontColor,
-            CreatedAt = result.CreatedAt,
-            UpdatedAt = result.UpdatedAt,
-            TotalCollaborators = result.TotalCollaborators,
-            InternalId = result.InternalId,
-            DataVersion = result.DataVersion
+            Active = result.active,
+            Id = result.companyid,
+            Name = result.name,
+            Document = new Document(DocumentType.CNPJ, result.document),
+            Logo = result.logo,
+            PrimaryColor = result.primarycolor,
+            PrimaryFontColor = result.primaryfontcolor,
+            SecondaryColor = result.secondarycolor,
+            SecondaryFontColor = result.secondaryfontcolor,
+            CreatedAt = result.createdat,
+            UpdatedAt = result.updatedat,
+            TotalCollaborators = result.totalcollaborators,
+            InternalId = result.internalid,
+            DataVersion = result.dataversion
         };
     }
 
     public async Task<bool> CompanyExistsAsync(Guid id)
     {
         const string query = """
-SELECT TOP 1 1  
-FROM Company WHERE CompanyID = @id
+SELECT 1  
+FROM Company WHERE CompanyID = @id LIMIT 1
 """;
 
         await using var db = CreateConnection();

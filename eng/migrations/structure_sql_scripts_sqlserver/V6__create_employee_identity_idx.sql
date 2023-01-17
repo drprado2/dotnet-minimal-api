@@ -1,0 +1,1 @@
+CREATE UNIQUE INDEX employee_idx_uk_identity_user_id ON Employee (IdentityUserId);

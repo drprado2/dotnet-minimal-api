@@ -8,6 +8,8 @@ using MinimalApi.Adapters.Events.RabbitMq;
 using MinimalApi.Adapters.Storage.SqlServer;
 using MinimalApi.Domain.Events;
 using MinimalApi.Domain.Events.Consumers;
+using Npgsql;
+using StackExchange.Redis;
 
 ValidatorOptions.Global.LanguageManager.Culture = new CultureInfo("en");
 
@@ -24,14 +26,15 @@ IHost host = Host.CreateDefaultBuilder(args)
     {
         services.AddRabbitMQ()
             .AddRabbitMQConumers()
-            // .AddCacheServices()
+            .AddCacheServices()
             .AddRepositories()
             .AddStackExchangeRedisCache(options =>
             {
                 options.Configuration = builder.Configuration.GetSection("Redis").GetValue<string>("ConnectionString");
                 options.InstanceName = builder.Configuration.GetSection("Redis").GetValue<string>("InstanceName");
             })
-            .AddSingleton<DbProviderFactory>(SqlClientFactory.Instance)
+            .AddSingleton<IConnectionMultiplexer>(sp => { return ConnectionMultiplexer.Connect(builder.Configuration.GetSection("Redis").GetValue<string>("ConnectionString")); })
+            .AddSingleton<DbProviderFactory>(NpgsqlFactory.Instance)
             .AddSingleton<IEventConsumer<CompanyCreated>, CompanyCreatedConsumer>()
             .AddSingleton<IEventConsumer<EmployeeCreated>, EmployeeCreatedConsumer>()
             .AddSingleton<IEventFactory, EventFactory>()

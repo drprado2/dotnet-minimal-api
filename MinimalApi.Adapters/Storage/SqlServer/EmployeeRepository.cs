@@ -29,7 +29,7 @@ VALUES (@Id, @IdentityUserId, @CompanyId, @Name, @Email, @Phone, @BirthDate, @Ac
     public async Task<Employee> GetByIdAsync(Guid id)
     {
         const string query = """
-SELECT EmployeeID as Id, IdentityUserId, CompanyId, Name, Email, Phone, BirthDate, Active, CreatedAt, UpdatedAt, RecordCreatedCount, RecordEditedCount, RecordDeletedCount, InternalId, DataVersion
+SELECT EmployeeID as Id, IdentityUserId, CompanyId, Name, Email, Phone, BirthDate, Active, CreatedAt, UpdatedAt, RecordCreatedCount, RecordEditedCount, RecordDeletedCount, InternalId, xmin as DataVersion
 FROM Employee WHERE EmployeeID = @id
 """;
 
@@ -40,7 +40,7 @@ FROM Employee WHERE EmployeeID = @id
     public async Task<Employee> GetByIdentityUserIdAsync(Guid identityUserId)
     {
         const string query = """
-SELECT EmployeeID as Id, IdentityUserId, CompanyId, Name, Email, Phone, BirthDate, Active, CreatedAt, UpdatedAt, RecordCreatedCount, RecordEditedCount, RecordDeletedCount, InternalId, DataVersion
+SELECT EmployeeID as Id, IdentityUserId, CompanyId, Name, Email, Phone, BirthDate, Active, CreatedAt, UpdatedAt, RecordCreatedCount, RecordEditedCount, RecordDeletedCount, InternalId, xmin as DataVersion
 FROM Employee WHERE IdentityUserId = @id
 """;
 
@@ -51,7 +51,7 @@ FROM Employee WHERE IdentityUserId = @id
     public async Task<IEnumerable<Employee>> GetEmployeesFromCompanyAsync(Guid companyId, int pageSize, long? lastPageId=long.MaxValue)
     {
         const string query = """
-SELECT TOP (@pageSize) EmployeeID as Id, Name, Email, Active, CreatedAt, DataVersion, InternalId FROM Employee WHERE InternalId < @lastPageId AND CompanyId = @companyId order by InternalId desc;
+SELECT EmployeeID as Id, Name, Email, Active, CreatedAt, xmin as DataVersion, InternalId FROM Employee WHERE InternalId < @lastPageId AND CompanyId = @companyId order by InternalId desc LIMIT @pageSize;
 """;
 
         await using var db = CreateConnection();
