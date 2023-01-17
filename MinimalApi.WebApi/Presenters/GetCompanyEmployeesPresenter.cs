@@ -38,7 +38,7 @@ public struct GetCompanyEmployeesOutput
         public string Name { get; set; }
         public string Email { get; set; }
         public DateTime CreatedAt { get; set; }
-        public byte[]? DataVersion { get; set; }
+        public uint DataVersion { get; set; }
     }
     
     public IList<Employee> Data { get; set; }

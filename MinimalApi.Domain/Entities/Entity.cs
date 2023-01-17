@@ -7,7 +7,7 @@ public abstract class Entity
     public DateTime? UpdatedAt { get; set; } = null;
     // Used for sort desc/asc 
     public long InternalId { get; set; } = 0;
-    public byte[]? DataVersion { get; set; }
+    public uint DataVersion { get; set; }
 
     // Throws exception in case of invalid state
     // Only sync validation, I/O validation or validation that involves other entities must be applied by the use case.

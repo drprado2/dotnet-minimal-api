@@ -7,7 +7,7 @@ public abstract class BaseRepository
 {
     private readonly DbProviderFactory _dbProviderFactory;
     private readonly string _connectionString;
-    private const string MinimalApiDbName = "MinimalApi";
+    private const string MinimalApiDbName = "MinimalApiPg";
     
 
     public BaseRepository(DbProviderFactory dbProviderFactory, IConfiguration config)

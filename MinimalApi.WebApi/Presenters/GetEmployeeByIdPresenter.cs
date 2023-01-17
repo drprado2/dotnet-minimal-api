@@ -51,5 +51,5 @@ public struct GetEmployeeByIdOutput
     public DateTime CreatedAt { get; set; }
     public DateTime? UpdatedAt { get; set; }
     public long InternalId { get; set; }
-    public byte[]? DataVersion { get; set; }
+    public uint DataVersion { get; set; }
 }

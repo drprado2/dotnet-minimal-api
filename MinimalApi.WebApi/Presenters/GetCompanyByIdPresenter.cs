@@ -53,5 +53,5 @@ public struct GetCompanyByIdOutput
     public DateTime CreatedAt { get; set; }
     public DateTime? UpdateAt { get; set; }
     public long InternalId { get; set; }
-    public byte[] DataVersion { get; set; }
+    public uint DataVersion { get; set; }
 }

@@ -12,6 +12,7 @@
         <PackageReference Include="FluentValidation" Version="11.4.0" />
         <PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="7.0.2" />
         <PackageReference Include="Microsoft.Extensions.Hosting" Version="7.0.0" />
+        <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="7.0.1" />
         <PackageReference Include="SqlServer.Connector" Version="1.0.0" />
         <PackageReference Include="StackExchange.Redis" Version="2.6.90" />
         <PackageReference Include="StackExchange.Redis.Extensions" Version="1.0.1" />

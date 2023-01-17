@@ -17,6 +17,7 @@ using MinimalApi.Domain.UseCases.Validations;
 using MinimalApi.Observability;
 using MinimalApi.WebApi.Middlewares;
 using MinimalApi.WebApi.Router;
+using Npgsql;
 using StackExchange.Redis;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -41,7 +42,7 @@ builder.Services
         options.InstanceName = builder.Configuration.GetSection("Redis").GetValue<string>("InstanceName");
     })
     .AddSingleton<IConnectionMultiplexer>(sp => { return ConnectionMultiplexer.Connect(builder.Configuration.GetSection("Redis").GetValue<string>("ConnectionString")); })
-    .AddSingleton<DbProviderFactory>(SqlClientFactory.Instance)
+    .AddSingleton<DbProviderFactory>(NpgsqlFactory.Instance)
     .AddSingleton<MinimalApi.Domain.UseCases.Validations.IValidator<CreateCompanyCmd>, CreateCompanyCmdValidator>()
     .AddSingleton<MinimalApi.Domain.UseCases.Validations.IValidator<CreateEmployeeCmd>, CreateEmployeeCmdValidator>()
     .AddSingleton<MinimalApi.Domain.UseCases.Validations.IValidator<GetCompanyEmployeesQuery>, GetCompanyEmployeesQueryValidator>()
@@ -53,7 +54,8 @@ builder.Services
 
 builder.Services
     .AddHealthChecks()
-    .AddSqlServer(builder.Configuration.GetConnectionString("MinimalApi"), "SELECT 1;", null, "Database", null, new[] { "ready" })
+    // .AddSqlServer(builder.Configuration.GetConnectionString("MinimalApi"), "SELECT 1;", null, "Database", null, new[] { "ready" })
+    .AddNpgSql(builder.Configuration.GetConnectionString("MinimalApiPg"), "SELECT 1;", null, "Database", null, new[] { "ready" })
     .AddRedis(builder.Configuration.GetSection("Redis").GetValue<string>("ConnectionString"), "Redis", null, new[] { "ready" })
     .AddRabbitMQ("RabbitMq", null, new[] { "ready" });
 
@@ -61,7 +63,10 @@ builder.Services
     .AddTracing()
     .AddMetrics();
 
-builder.AddAppLogging();
+// builder.AddAppLogging();
+
+builder.Logging.ClearProviders();
+builder.Logging.AddConsole();
 
 builder.Services.Configure<JsonOptions>(options => { options.SerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull; });
 
